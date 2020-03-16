@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GameOverlay">
+
+    <TextView
+        android:id="@+id/p1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="20dp"
+        android:height="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/p2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="20dp"
+        android:height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/runde"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="20dp"
+        android:height="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/p1"/>
+
+    <TextView
+        android:id="@+id/geworfen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="20dp"
+        android:height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/p2"/>
+
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="20dp"
+        android:height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/geworfen"/>
+
+    <Button
+        android:id="@+id/enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="20dp"
+        android:height="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/runde" />
+
+    <Button
+        android:id="@+id/neuesSpiel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="20dp"
+        android:height="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/enter" />
+
+    <Button
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="20dp"
+        android:height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/delete"/>
+
+    <ImageView
+        android:id="@+id/dartImage"
+        android:layout_width="wrap_content"
+        android:layout_height="370dp"
+        android:src="@drawable/dartscheibe800x800"
+        android:layout_alignParentBottom="true"/>
+
+
+
+</android.widget.RelativeLayout>

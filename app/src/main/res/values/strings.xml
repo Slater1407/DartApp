@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DartApp</string>
+    <string name="title_activity_test">Test</string>
+    <string name="title_activity_game_overlay_cricket">GameOverlayCricket</string>
+</resources>

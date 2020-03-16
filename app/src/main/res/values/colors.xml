@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#0eab00</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="green">#0eab00</color>
+    <color name="red">#ab0006</color>
+    <color name="inactive">#313131</color>
+    <color name="btnBackgroundClickable">#bfbfbf</color>
+    <color name="btnFontClickable">#000000</color>
+    <color name="btnBackgroundUNClickable">#ffffff</color>
+    <color name="btnFontUNClickable">#b6b6b6</color>
+    <color name="myDesignBackground">#303030</color>
+    <color name="myDesignFont">#8c8c8c</color>
+    <color name="lightBlack">#292929</color>
+</resources>
