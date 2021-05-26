@@ -18,8 +18,6 @@ public class PosCalc {
     private int[] fieldY = new int[20];
     private final int[] numbers = {13, 4, 18, 1, 20, 5, 12, 9, 14, 11, 8, 16, 7, 19, 3, 17, 2, 15, 10, 6};
     private int[] circles = new int[6];
-    private int result;
-    private int state;
    // int circle1 = radius; //aeußerster Ring
 
     private final int maxX, maxY;
@@ -33,7 +31,6 @@ public class PosCalc {
         midY = maxY/2;
         calcEdge();
         calcCircles();
-        result = 0;
     }
 
     public int delta(int angle, int anK){ //funktion zur berechnung der gegenkathete
@@ -300,8 +297,9 @@ public class PosCalc {
         return 0;
     }
 
-    public void calcAll(int xCoord, int yCoord){
-
+    public ThrowResult calcAll(int xCoord, int yCoord){
+        int result = 0;
+        int state = 0;
         Point touched = touchCalc(xCoord, yCoord);
         result = checkPos(touched.x, touched.y);
         int distance = checkDistance(xCoord, yCoord);
@@ -310,12 +308,10 @@ public class PosCalc {
             result = 0;
         }else if(distance > circles[1]){
             state = DOUBLE;
-            result = result * 2;
         }else if(distance > circles[2]){
             state = NORMAL;
         }else if(distance > circles[3]){
             state = TRIPLE;
-            result = result * 3;
         }else if(distance > circles[4]){
             state = NORMAL;
         }else if(distance > circles[5]){
@@ -323,14 +319,8 @@ public class PosCalc {
             result = 25;
         }else{
             state = DOUBLE;
-            result = 25*2;
+            result = 25;
         }
-    }
-
-    public int getResult(){
-        return result;
-    }
-    public int getState(){
-        return state;
+        return new ThrowResult(result, state);
     }
 }

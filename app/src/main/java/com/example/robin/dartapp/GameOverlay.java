@@ -15,31 +15,31 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.Handler;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
 
 public class GameOverlay extends AppCompatActivity {
 
-    public static int lastScore = 0;
-    public int roundPoints = 0;
-    public int roundPointsCounter = 1;
-    static boolean resetAllowed = false;
-    GameThreeHundret game;
+    List<Throw> throwSaves;
+    List<Player> players;
+    Player player;
+    GameCasual game;
+    int whatPlayer;
+    int round;
+    int arrow;
+    int roundPoints;
+    PosCalc posCalc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gameoverlay);
-//-----------------------------------------------------------------------------------------------------------------------
-//Daten aus vorheriger Activity empfangen
 
-        final int countPlayers = getIntent().getIntExtra("COUNTPLAYERS", -1);
-        final String extra1 = getIntent().getStringExtra("EXTRA1");
-        final String extra2 = getIntent().getStringExtra("EXTRA2");
-        final String mode = getIntent().getStringExtra("MODE");
-        final String[] playerArr = new String[countPlayers];
-
-        for(int i = 1; i <= countPlayers; i++){
-            playerArr[i-1] = getIntent().getStringExtra("PLAYER"+i);
-        }
+        createGame();
 
 
 //-----------------------------------------------------------------------------------------------------------------------
@@ -50,39 +50,13 @@ public class GameOverlay extends AppCompatActivity {
         final int x = displayMetrics.widthPixels;
         final int y = displayMetrics.heightPixels;
         final int xDart = x/2;
-
-//-----------------------------------------------------------------------------------------------------------------------
-//Objekte initialisieren
-        final PosCalc posCalc = new PosCalc(x, x);                              //Objekt fuer die Berechnung der beruehrten Punkte auf der Dartscheibe
-
-        final int totalScore;
-        if(mode.equals("301")){
-            totalScore = 301;
-        }else if(mode.equals("501")){
-            totalScore = 501;
-        }else{
-            totalScore = 999;
-        }
-        final int extra;
-        if(extra1 == null && extra2 == null){
-            extra = GameThreeHundret.NORMAL;
-        }else if(extra1 != null && extra2 == null){
-            extra = GameThreeHundret.DOUBLE_IN;
-        }else if(extra1 == null && extra2 != null){
-            extra = GameThreeHundret.DOUBLE_OUT;
-        }else{
-            extra = GameThreeHundret.DOUBLE_IN_OUT;
-        }
-
-
-        game = new GameThreeHundret(playerArr, extra, totalScore);    //Objekt des Spiels
-
+        posCalc = new PosCalc(x, x);                              //Objekt fuer die Berechnung der beruehrten Punkte auf der Dartscheibe
 //------------------------------------------------------------------------------------------------------------------------
 //Grafische Oberflaeche einrichten
 
         RelativeLayout mLayout = new RelativeLayout(this);
         mLayout.setBackgroundColor(getResources().getColor(R.color.black));
-        ImageView dartScheibe = new ImageView(this);
+        final ImageView dartScheibe = new ImageView(this);
         final TextView infoPlayer = new TextView(this);
         final TextView infoRoundPoints = new TextView(this);
         final TextView infoRunden = new TextView(this);
@@ -95,7 +69,7 @@ public class GameOverlay extends AppCompatActivity {
         dartScheibe.setImageResource(R.drawable.dartscheibe800x800neu);
       //  dartScheibe.setBackgroundColor(getResources().getColor(R.color.colorAccent));
 
-        infoPlayer.setText(playerArr[0] + ": " + game.getScore(0));
+        infoPlayer.setText(player.getName() + ": " + player.getScore());
         infoPlayer.setId(ViewCompat.generateViewId());
         infoPlayer.setTextSize(x/50);
         infoPlayer.setBackgroundColor(getResources().getColor(R.color.transparent));
@@ -110,7 +84,7 @@ public class GameOverlay extends AppCompatActivity {
         infoRoundPoints.setGravity(Gravity.LEFT);
         infoRoundPoints.setGravity(Gravity.CENTER_VERTICAL);
 
-        infoRunden.setText("Runde: " + game.getRound());
+        infoRunden.setText("Runde: " + round);
         infoRunden.setId(ViewCompat.generateViewId());
         infoRunden.setTextSize(x/50);
         infoRunden.setTextColor(getResources().getColor(R.color.myDesignFont));
@@ -245,68 +219,49 @@ public class GameOverlay extends AppCompatActivity {
             {
                 Integer xCoord = (int)mEvent.getX();
                 Integer yCoord = (int)mEvent.getY();
-                //infoPlayer.setText("x: " + xCoord.toString() + "   y:" + yCoord.toString());
+                ThrowResult throwResult = posCalc.calcAll(xCoord, yCoord); //Position berechnen
+                player = players.get(whatPlayer);
+                if(!game.doThrow(player, throwResult)){
+                    resetPlayer(player, arrow, throwSaves);
+                    nextPlayer();
+                    arrow = 1;
+                    roundPoints = 0;
+                    Toast busted = Toast.makeText(getApplicationContext(), "BUSTED!", Toast.LENGTH_SHORT);
+                    busted.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                    busted.show();
+                }else {
+                    if (player.getScore() == 0) {
+                        infoPlayer.setBackgroundColor(getResources().getColor(R.color.green));
+                        dartScheibe.setEnabled(false);
 
-                //Point touched = posCalc.touchCalc(xCoord, yCoord);
+                    }
+                    roundPoints+=throwResult.getSum();
+                    throwSaves.add(new Throw(player, throwResult, arrow, round, roundPoints, whatPlayer));
+                    nextArrow();
+                }
+                updateInfo(infoPlayer, infoGeworfen, null, infoRoundPoints, throwResult.toString());
+                /*infoPlayer.setText(player.getName()+ ": " +player.getScore());
+                infoGeworfen.setText("Geworfen: "+throwResult.getPoints());
+                infoRoundPoints.setText("Ges: "+ roundPoints);*/
 
-                //Integer result = posCalc.checkPos(touched.x, touched.y);
-                //int distance = posCalc.checkDistance(xCoord, yCoord);
+                if(arrow == 1) {
+                    dartScheibe.setEnabled(false);
+                    player = players.get(whatPlayer);
+                    roundPoints = 0;
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateInfo(infoPlayer, infoGeworfen, infoRunden, infoRoundPoints, "0");
+                          /*  infoPlayer.setText(player.getName()+ ": " +player.getScore());
+                            infoGeworfen.setText("Geworfen: "+ 0);
+                            infoRunden.setText("Runde: "+ round);
+                            infoRoundPoints.setText("Ges: "+ roundPoints);*/
+                            dartScheibe.setEnabled(true);
+                        }
+                    }, 1000);
+                }
 
-               /* infoPlayer.setText(result.toString());
-                if(distance > xDart)
-                    infoPlayer.setText("0");*/
-               if(game.getWinner() == 99) {
-                   posCalc.calcAll(xCoord, yCoord); //Position berechnen
-                   Integer result = posCalc.getResult(); //geworfene Zahl
-                   lastScore = result;
-                   Integer state = posCalc.getState(); //double triple oder normal
-                   boolean busted = game.hit(result, state);
-                   resetAllowed = true;
-                   if (busted == false) {
-                       Toast bust = Toast.makeText(getApplicationContext(), "BUSTED!", Toast.LENGTH_SHORT);
-                       bust.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                       bust.show();
-                   }
-
-                   if(roundPointsCounter > 3){
-                       roundPoints = result;
-                       roundPointsCounter = 2;
-                   }else{
-                       roundPoints += result;
-                       roundPointsCounter++;
-                   }
-
-                   infoPlayer.setText(playerArr[game.getWhatPlayer()] + ": " + game.getScore(game.getWhatPlayer()));
-                   infoRoundPoints.setText("Ges: " + roundPoints);
-                   infoGeworfen.setText("Geworfen: " + result);
-                   infoRunden.setText("Runde: " + game.getRound());
-
-                   if(game.getWinner() != 99){
-                       /*switch (game.getWinner()){
-                           case 0:
-                               Toast win = Toast.makeText(getApplicationContext(), "Der Gewinner ist: "+ p1, Toast.LENGTH_SHORT);
-                               win.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                               win.show();
-                               infoPlayer.setBackgroundColor(getResources().getColor(R.color.green));
-                               infoRoundPoints.setBackgroundColor(getResources().getColor(R.color.red));
-                               break;
-                           case 1:
-                               Toast win2 = Toast.makeText(getApplicationContext(), "Der Gewinner ist: "+ p2, Toast.LENGTH_SHORT);
-                               win2.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                               win2.show();
-                               infoRoundPoints.setBackgroundColor(getResources().getColor(R.color.green));
-                               infoPlayer.setBackgroundColor(getResources().getColor(R.color.red));
-                               break;
-                           default:
-                               break;
-                       }*/
-                       infoPlayer.setBackgroundColor(getResources().getColor(R.color.green));
-                       Toast win = Toast.makeText(getApplicationContext(), "Der Gewinner ist: "+ playerArr[game.getWinner()], Toast.LENGTH_SHORT);
-                       win.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                       win.show();
-                       infoPlayer.setText(playerArr[game.getWinner()]);
-                   }
-               }
 
                 return false;
             }
@@ -316,13 +271,10 @@ public class GameOverlay extends AppCompatActivity {
         btnNeuesSpiel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                game = new GameThreeHundret(playerArr, extra, totalScore);
-                infoPlayer.setText(playerArr[0] + ": " + game.getScore(game.getWhatPlayer()));
-                roundPoints = 0;
-                infoRoundPoints.setText("Ges: " + roundPoints);
-                infoRunden.setText("Runde: " + game.getRound());
-                infoGeworfen.setText("Geworfen: ");
+                createGame();
+                updateInfo(infoPlayer, infoGeworfen, infoRunden, infoRoundPoints, "0");
                 infoPlayer.setBackgroundColor(getResources().getColor(R.color.transparent));
+                dartScheibe.setEnabled(true);
             }
         });
 
@@ -330,9 +282,9 @@ public class GameOverlay extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(GameOverlay.this, ChoosePlayers.class);
+                //Intent intent = new Intent(GameOverlay.this, ChoosePlayers.class);
                 finish();
-                startActivity(intent);
+                //startActivity(intent);
             }
         });
 
@@ -340,21 +292,112 @@ public class GameOverlay extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                if(resetAllowed == true) {
-                    game.failClick(lastScore);
-                    infoPlayer.setText(playerArr[game.getWhatPlayer()] + ": " + game.getScore(game.getWhatPlayer()));
+                if(throwSaves.size() > 1) {
+                    undoLastThrow();
+                    Throw lastThrow = throwSaves.get(throwSaves.size() - 1);
+                    roundPoints = lastThrow.getRoundPoints();
+                    updateInfo(infoPlayer, infoGeworfen, infoRunden, infoRoundPoints, lastThrow.getThrowResult().toString());
+                    dartScheibe.setEnabled(true);
                     infoPlayer.setBackgroundColor(getResources().getColor(R.color.transparent));
-                    infoGeworfen.setText("Geworfen: ");
-                    infoRunden.setText("Runde: " + game.getRound());
-                    game.setWinner(99);
-                    resetAllowed = false;
-                }else{
-                    Toast nA = Toast.makeText(getApplicationContext(), "Rücksetzen nicht möglich", Toast.LENGTH_LONG);
-                    nA.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                    nA.show();
                 }
             }
         });
+    }
+/*
+Player1
+10
+20
+
+ */
+
+    void nextPlayer(){
+        if(whatPlayer == players.size()-1){
+            whatPlayer = 0;
+            round++;
+        }else{
+            whatPlayer++;
+        }
+    }
+    void nextArrow(){
+        if(arrow == 3){
+            arrow = 1;
+            nextPlayer();
+        }else{
+            arrow++;
+        }
+    }
+    void resetPlayer(Player cPlayer, int cArrow, List<Throw> listThrows){
+        for(int i = cArrow; i > 1; i--) {
+            Throw lastThrow = listThrows.get(listThrows.size() - 1);
+            cPlayer.addScore(lastThrow.getThrowResult().getSum());
+            listThrows.remove(lastThrow);
+        }
+    }
+    void undoLastThrow(){
+        Throw lastThrow = throwSaves.get(throwSaves.size()-1);
+        player = lastThrow.getPlayer();
+        player.addScore(lastThrow.getThrowResult().getSum());
+        arrow = lastThrow.getArrow();
+        round = lastThrow.getRound();
+        whatPlayer = lastThrow.getWhatPlayer();
+        throwSaves.remove(lastThrow);
+    }
+    void createGame(){
+        throwSaves = new ArrayList<>();
+        players = new ArrayList<>();
+        whatPlayer = 0;
+        round = 1;
+        arrow = 1;
+        roundPoints = 0;
+        //-----------------------------------------------------------------------------------------------------------------------
+        //Daten aus vorheriger Activity empfangen
+
+        final int countPlayers = getIntent().getIntExtra("COUNTPLAYERS", -1);
+        final String extra1 = getIntent().getStringExtra("EXTRA1");
+        final String extra2 = getIntent().getStringExtra("EXTRA2");
+        final String mode = getIntent().getStringExtra("MODE");
+
+        //-----------------------------------------------------------------------------------------------------------------------
+        //Objekte initialisieren
+        final int totalScore;
+        if(mode.equals("301")){
+            totalScore = 301;
+        }else if(mode.equals("501")){
+            totalScore = 501;
+        }else{
+            totalScore = 999;
+        }
+        for(int i = 1; i < countPlayers+1; i++){
+            players.add(new Player(getIntent().getStringExtra("PLAYER"+i), totalScore));
+        }
+        final int extra;
+        if(extra1 == null && extra2 == null){
+            extra = GameCasual.NORMAL;
+        }else if(extra1 != null && extra2 == null){
+            extra = GameCasual.DOUBLE_IN;
+        }else if(extra1 == null && extra2 != null){
+            extra = GameCasual.DOUBLE_OUT;
+        }else{
+            extra = GameCasual.DOUBLE_IN_OUT;
+        }
+
+        player = players.get(0);
+        game = new GameCasual(extra, totalScore);    //Objekt des Spiels
+        throwSaves.add(new Throw(player, new ThrowResult(0, 1), arrow, round, roundPoints, whatPlayer));
+    }
+    void updateInfo(TextView infoSpieler, TextView infoGeworfen, TextView infoRunden, TextView infoRundenPunkte, String geworfen){
+        if(infoSpieler != null){
+            infoSpieler.setText(player.getName() + ": " + player.getScore());
+        }
+        if(infoGeworfen != null){
+            infoGeworfen.setText("Geworfen: "+ geworfen);
+        }
+        if(infoRunden != null){
+            infoRunden.setText("Runde: " + round);
+        }
+        if(infoRundenPunkte != null){
+            infoRundenPunkte.setText("Ges: " + roundPoints);
+        }
     }
 
 }

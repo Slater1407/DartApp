@@ -25,7 +25,6 @@ public class GameOverlayCricket extends AppCompatActivity {
     public static int lastScore = 0;
     static boolean resetAllowed = false;
     String exes = "";
-    GameCricket game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +93,12 @@ public class GameOverlayCricket extends AppCompatActivity {
 
         final int extra;
         if(extra2 != null){
-            extra = GameCricket.CUT;
+
         }else{
-            extra = GameCricket.NORMAL;
+
         }
 
-        game = new GameCricket(playerArr, numbers, extra);    //Objekt des Spiels
+          //Objekt des Spiels
 
 //------------------------------------------------------------------------------------------------------------------------
 //Grafische Oberflaeche einrichten
@@ -204,21 +203,21 @@ public class GameOverlayCricket extends AppCompatActivity {
 
         switch(countPlayers){
             case 8:
-                infoPlayer8.setText(playerArr[7] + ": " + game.getScore(7));
+                infoPlayer8.setText(playerArr[7] + ": " );
             case 7:
-                infoPlayer7.setText(playerArr[6] + ": " + game.getScore(6));
+                infoPlayer7.setText(playerArr[6] + ": " );
             case 6:
-                infoPlayer6.setText(playerArr[5] + ": " + game.getScore(5));
+                infoPlayer6.setText(playerArr[5] + ": " );
             case 5:
-                infoPlayer5.setText(playerArr[4] + ": " + game.getScore(4));
+                infoPlayer5.setText(playerArr[4] + ": " );
             case 4:
-                infoPlayer4.setText(playerArr[3] + ": " + game.getScore(3));
+                infoPlayer4.setText(playerArr[3] + ": " );
             case 3:
-                infoPlayer3.setText(playerArr[2] + ": " + game.getScore(2));
+                infoPlayer3.setText(playerArr[2] + ": " );
             case 2:
-                infoPlayer2.setText(playerArr[1] + ": " + game.getScore(1));
+                infoPlayer2.setText(playerArr[1] + ": ");
             case 1:
-                infoPlayer1.setText(playerArr[0] + ": " + game.getScore(0));
+                infoPlayer1.setText(playerArr[0] + ": " );
             default:
 
         }
@@ -468,304 +467,10 @@ public class GameOverlayCricket extends AppCompatActivity {
                 Integer xCoord = (int)mEvent.getX();
                 Integer yCoord = (int)mEvent.getY();
 
-                posCalc.calcAll(xCoord, yCoord); //Position berechnen
-                Integer result = posCalc.getResult(); //geworfene Zahl
-                lastScore = result;
-                Integer state = posCalc.getState(); //double triple oder normal
-
-                if(game.getWinner()==99) {
-                    game.hit(result, state);
-
-                    if (game.getWinner() != 99) {
-                        //infoPlayer.setBackgroundColor(getResources().getColor(R.color.green));
-                        Toast win = Toast.makeText(getApplicationContext(), "Der Gewinner ist: " + playerArr[game.getWinner()], Toast.LENGTH_SHORT);
-                        win.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                        win.show();
-                        // infoPlayer.setText(playerArr[game.getWinner()]);
-                    }
-                }
-
-                switch(countPlayers){
-                    case 8:
-                        infoPlayer8.setText(playerArr[7] + ": " + game.getScore(7));
-                    case 7:
-                        infoPlayer7.setText(playerArr[6] + ": " + game.getScore(6));
-                    case 6:
-                        infoPlayer6.setText(playerArr[5] + ": " + game.getScore(5));
-                    case 5:
-                        infoPlayer5.setText(playerArr[4] + ": " + game.getScore(4));
-                    case 4:
-                        infoPlayer4.setText(playerArr[3] + ": " + game.getScore(3));
-                    case 3:
-                        infoPlayer3.setText(playerArr[2] + ": " + game.getScore(2));
-                    case 2:
-                        infoPlayer2.setText(playerArr[1] + ": " + game.getScore(1));
-                    case 1:
-                        infoPlayer1.setText(playerArr[0] + ": " + game.getScore(0));
-                    default:
-
-                }
-
-                if(game.getAllNumbers(game.getWhatPlayer())[0] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[0] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[0] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[0] == 0)
-                    exes = "";
-                infoNumber1.setText(numbers[0] +"\n" + exes);
-                if(game.getAllNumbers(game.getWhatPlayer())[1] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[1] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[1] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[1] == 0)
-                    exes = "";
-                infoNumber2.setText(numbers[1] +"\n" + exes);
-                if(game.getAllNumbers(game.getWhatPlayer())[2] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[2] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[2] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[2] == 0)
-                    exes = "";
-                infoNumber3.setText(numbers[2] +"\n" + exes);
-                if(game.getAllNumbers(game.getWhatPlayer())[3] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[3] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[3] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[3] == 0)
-                    exes = "";
-                infoNumber4.setText(numbers[3] +"\n" + exes);
-
-                if(game.getAllNumbers(game.getWhatPlayer())[4] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[4] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[4] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[4] == 0)
-                    exes = "";
-                infoNumber5.setText(numbers[4] +"\n" + exes);
-                if(game.getAllNumbers(game.getWhatPlayer())[5] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[5] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[5] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[5] == 0)
-                    exes = "";
-                infoNumber6.setText(numbers[5] +"\n" + exes);
-                if(game.getAllNumbers(game.getWhatPlayer())[6] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[6] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[6] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[6] == 0)
-                    exes = "";
-                infoNumber7.setText("B"+"\n" + exes);
-
-                switch (game.getWhatPlayer()){
-                    case 7:
-                        infoPlayer8.setBackgroundColor(getResources().getColor(R.color.lightBlack));
-                        infoPlayer7.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer6.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer5.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer4.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer3.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer2.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer1.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        break;
-
-                    case 6:
-                        infoPlayer8.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer7.setBackgroundColor(getResources().getColor(R.color.lightBlack));
-                        infoPlayer6.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer5.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer4.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer3.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer2.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer1.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        break;
-
-                    case 5:
-                        infoPlayer8.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer7.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer6.setBackgroundColor(getResources().getColor(R.color.lightBlack));
-                        infoPlayer5.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer4.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer3.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer2.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer1.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        break;
-
-                    case 4:
-                        infoPlayer8.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer7.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer6.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer5.setBackgroundColor(getResources().getColor(R.color.lightBlack));
-                        infoPlayer4.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer3.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer2.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer1.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        break;
-
-                    case 3:
-                        infoPlayer8.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer7.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer6.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer5.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer4.setBackgroundColor(getResources().getColor(R.color.lightBlack));
-                        infoPlayer3.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer2.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer1.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        break;
-
-                    case 2:
-                        infoPlayer8.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer7.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer6.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer5.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer4.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer3.setBackgroundColor(getResources().getColor(R.color.lightBlack));
-                        infoPlayer2.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer1.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        break;
-
-                    case 1:
-                        infoPlayer8.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer7.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer6.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer5.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer4.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer3.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer2.setBackgroundColor(getResources().getColor(R.color.lightBlack));
-                        infoPlayer1.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        break;
-
-                    case 0:
-                        infoPlayer8.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer7.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer6.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer5.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer4.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer3.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer2.setBackgroundColor(getResources().getColor(R.color.transparent));
-                        infoPlayer1.setBackgroundColor(getResources().getColor(R.color.lightBlack));
-                        break;
-
-                    default:
-                }
+                ThrowResult throwResult = posCalc.calcAll(xCoord, yCoord); //Position berechnen
 
 
                 return false;
-            }
-
-        });
-
-        btnNeuesSpiel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                game = new GameCricket(playerArr, numbers, extra);
-                switch(countPlayers){
-                    case 8:
-                        infoPlayer8.setText(playerArr[7] + ": " + game.getScore(7));
-                    case 7:
-                        infoPlayer7.setText(playerArr[6] + ": " + game.getScore(6));
-                    case 6:
-                        infoPlayer6.setText(playerArr[5] + ": " + game.getScore(5));
-                    case 5:
-                        infoPlayer5.setText(playerArr[4] + ": " + game.getScore(4));
-                    case 4:
-                        infoPlayer4.setText(playerArr[3] + ": " + game.getScore(3));
-                    case 3:
-                        infoPlayer3.setText(playerArr[2] + ": " + game.getScore(2));
-                    case 2:
-                        infoPlayer2.setText(playerArr[1] + ": " + game.getScore(1));
-                    case 1:
-                        infoPlayer1.setText(playerArr[0] + ": " + game.getScore(0));
-                    default:
-                }
-
-                if(game.getAllNumbers(game.getWhatPlayer())[0] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[0] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[0] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[0] == 0)
-                    exes = "";
-                infoNumber1.setText(numbers[0] +"\n" + exes);
-                if(game.getAllNumbers(game.getWhatPlayer())[1] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[1] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[1] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[1] == 0)
-                    exes = "";
-                infoNumber2.setText(numbers[1] +"\n" + exes);
-                if(game.getAllNumbers(game.getWhatPlayer())[2] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[2] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[2] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[2] == 0)
-                    exes = "";
-                infoNumber3.setText(numbers[2] +"\n" + exes);
-                if(game.getAllNumbers(game.getWhatPlayer())[3] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[3] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[3] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[3] == 0)
-                    exes = "";
-                infoNumber4.setText(numbers[3] +"\n" + exes);
-
-                if(game.getAllNumbers(game.getWhatPlayer())[4] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[4] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[4] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[4] == 0)
-                    exes = "";
-                infoNumber5.setText(numbers[4] +"\n" + exes);
-                if(game.getAllNumbers(game.getWhatPlayer())[5] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[5] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[5] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[5] == 0)
-                    exes = "";
-                infoNumber6.setText(numbers[5] +"\n" + exes);
-                if(game.getAllNumbers(game.getWhatPlayer())[6] == 3)
-                    exes = "XXX";
-                if(game.getAllNumbers(game.getWhatPlayer())[6] == 2)
-                    exes = "XX";
-                if(game.getAllNumbers(game.getWhatPlayer())[6] == 1)
-                    exes = "X";
-                if(game.getAllNumbers(game.getWhatPlayer())[6] == 0)
-                    exes = "";
-                infoNumber7.setText("B" +"\n" + exes);
-
-                infoPlayer8.setBackgroundColor(getResources().getColor(R.color.transparent));
-                infoPlayer7.setBackgroundColor(getResources().getColor(R.color.transparent));
-                infoPlayer6.setBackgroundColor(getResources().getColor(R.color.transparent));
-                infoPlayer5.setBackgroundColor(getResources().getColor(R.color.transparent));
-                infoPlayer4.setBackgroundColor(getResources().getColor(R.color.transparent));
-                infoPlayer3.setBackgroundColor(getResources().getColor(R.color.transparent));
-                infoPlayer2.setBackgroundColor(getResources().getColor(R.color.transparent));
-                infoPlayer1.setBackgroundColor(getResources().getColor(R.color.lightBlack));
             }
         });
 

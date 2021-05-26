@@ -1,5 +1,6 @@
 package com.example.robin.dartapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -63,8 +64,8 @@ public class ChooseMode extends AppCompatActivity{
         btn301.setText("301");
         btn301.setTextColor(getResources().getColor(R.color.btnFontClickable));
         btn301.setBackgroundColor(getResources().getColor(R.color.btnBackgroundClickable));
-        btn301.setBackground(getResources().getDrawable(R.drawable.rounded_textfield));
-        btn301.setTextColor(getResources().getColor(R.color.myDesignFont));
+        //btn301.setBackground(getResources().getDrawable(R.drawable.rounded_textfield));
+       // btn301.setTextColor(getResources().getColor(R.color.myDesignFont));
         btn301.setId(ViewCompat.generateViewId());
         btn301.setTextSize(x/50);
         btn301.setGravity(Gravity.LEFT);
@@ -116,7 +117,7 @@ public class ChooseMode extends AppCompatActivity{
         btnOpt3.setGravity(Gravity.CENTER_VERTICAL);
         btnOpt3.setGravity(Gravity.CENTER_HORIZONTAL);
 //----------------------------------------------------------------------------------------------------------------------------------------------------
-        btnWeiter.setText("Weiter");
+        btnWeiter.setText("WEITER");
         btnWeiter.setTextColor(getResources().getColor(R.color.btnFontUNClickable));
         btnWeiter.setBackgroundColor(getResources().getColor(R.color.btnBackgroundUNClickable));
         btnWeiter.setId(ViewCompat.generateViewId());
@@ -509,7 +510,7 @@ public class ChooseMode extends AppCompatActivity{
                     intent.putExtra("MODE", mode);
                     intent.putExtra("EXTRA1", extra1);
                     intent.putExtra("EXTRA2", extra2);
-                    finish();
+                    //finish();
                     startActivity(intent);
                 }
             }

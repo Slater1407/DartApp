@@ -25,9 +25,9 @@ public class ChoosePlayers extends AppCompatActivity {
     private Button btn_newPlayer;
     private Button btn_lessPlayer;
     private Button btn_back;
-    private TextView tv_Player;
     private EditText et_Player;
     private int countPlayer;
+    private int maxPlayers = 8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +37,10 @@ public class ChoosePlayers extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-        int x = displayMetrics.widthPixels;
-        int y = displayMetrics.heightPixels;
+        final int x = displayMetrics.widthPixels;
+        final int y = displayMetrics.heightPixels;
 
-        countPlayer = 1;
+        countPlayer = 0;
 
 //----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -48,18 +48,10 @@ public class ChoosePlayers extends AppCompatActivity {
         btn_newPlayer = new Button(this);
         btn_lessPlayer = new Button(this);
         btn_back = new Button(this);
-        tv_Player = new TextView(this);
         et_Player = new EditText(this);
         RelativeLayout mLayout = new RelativeLayout(this);
         mLayout.setBackgroundColor(getResources().getColor(R.color.black));
 
-        tv_Player.setText("Spieler " + countPlayer);
-        tv_Player.setGravity(Gravity.CENTER);
-        tv_Player.setTextSize(x/30);
-       // tv_Player.setBackground(getResources().getDrawable(R.drawable.rounded_textfield));
-        tv_Player.setTextColor(getResources().getColor(R.color.myDesignFont));
-        tv_Player.setBackgroundColor(getResources().getColor(R.color.black));
-        tv_Player.setId(ViewCompat.generateViewId());
 
         //et_Player.setText("");
         et_Player.setTextSize(x/50);
@@ -70,7 +62,7 @@ public class ChoosePlayers extends AppCompatActivity {
         et_Player.setGravity(Gravity.CENTER);
         et_Player.setId(ViewCompat.generateViewId());
 
-        btn_nextActivity.setText("WEITER");
+        btn_nextActivity.setText("SPIELEN!");
         btn_nextActivity.setGravity(Gravity.CENTER);
         btn_nextActivity.setTextSize(x/40);
         btn_nextActivity.setWidth(x);
@@ -93,7 +85,7 @@ public class ChoosePlayers extends AppCompatActivity {
         btn_lessPlayer.setBackground(getResources().getDrawable(R.drawable.round_button_red));
         btn_lessPlayer.setId(ViewCompat.generateViewId());
 
-        btn_back.setText("ZURÜCK");
+        btn_back.setText("MODUS");
         btn_back.setGravity(Gravity.CENTER);
         btn_back.setTextSize(x/40);
         btn_back.setWidth(x);
@@ -103,7 +95,6 @@ public class ChoosePlayers extends AppCompatActivity {
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        RelativeLayout.LayoutParams lp_tv_Player = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         RelativeLayout.LayoutParams lp_et_Player = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         RelativeLayout.LayoutParams lp_btn_nextActivity = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         RelativeLayout.LayoutParams lp_btn_back = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -113,12 +104,7 @@ public class ChoosePlayers extends AppCompatActivity {
 
         mLayout.setLayoutParams(lp);
 
-        lp_tv_Player.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        lp_tv_Player.setMargins(0, y/3, 0, 0);
-        tv_Player.setLayoutParams(lp_tv_Player);
-        mLayout.addView(tv_Player);
-
-        lp_et_Player.addRule(RelativeLayout.BELOW, tv_Player.getId());
+        lp_et_Player.addRule(RelativeLayout.CENTER_VERTICAL);
         lp_et_Player.addRule(RelativeLayout.CENTER_HORIZONTAL);
         lp_et_Player.setMargins(0, y/50, 0, 0);
         et_Player.setLayoutParams(lp_et_Player);
@@ -168,8 +154,8 @@ public class ChoosePlayers extends AppCompatActivity {
                     btn_nextActivity.setEnabled(false);
                     btn_newPlayer.setEnabled(false);
                 }else{
-                    btn_nextActivity.setEnabled(true);
-                    btn_newPlayer.setEnabled(true);
+                    if(countPlayer < maxPlayers)
+                        btn_newPlayer.setEnabled(true);
                 }
             }
 
@@ -182,15 +168,22 @@ public class ChoosePlayers extends AppCompatActivity {
         btn_newPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countPlayer<8) {
+                if(countPlayer < maxPlayers) {
                     playerList.add(et_Player.getText().toString());
                     countPlayer++;
-                    tv_Player.setText("Spieler " + countPlayer);
                     et_Player.setText("");
                     btn_lessPlayer.setEnabled(true);
                     if(countPlayer >= 8){
                         btn_newPlayer.setEnabled(false);
                     }
+                    btn_nextActivity.setEnabled(true);
+                    Toast player_added = Toast.makeText(getApplicationContext(), "Spieler : " + playerList.get(playerList.size()-1) + " hinzugefügt.", Toast.LENGTH_SHORT);
+                    player_added.setGravity(Gravity.CENTER_VERTICAL, 0, -(y /10));
+                    player_added.show();
+                }else{
+                    Toast player_full = Toast.makeText(getApplicationContext(), "Maximale Spieleranzahl erreicht!", Toast.LENGTH_SHORT);
+                    player_full.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                    player_full.show();
                 }
             }
         });
@@ -198,12 +191,13 @@ public class ChoosePlayers extends AppCompatActivity {
         btn_lessPlayer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(countPlayer>1){
+                if(countPlayer>=1){
+                    et_Player.setText(playerList.get(countPlayer - 1));
+                    playerList.remove(countPlayer-1);
                     countPlayer--;
-                    tv_Player.setText("Spieler " + countPlayer);
-                    et_Player.setText(playerList.get(countPlayer-1));
-                    if(countPlayer<=1){
+                    if(countPlayer<1) {
                         btn_lessPlayer.setEnabled(false);
+                        btn_nextActivity.setEnabled(false);
                     }
                 }
             }
@@ -213,7 +207,6 @@ public class ChoosePlayers extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent;
-                playerList.add(et_Player.getText().toString());
                 if(mode.equals("CRICKET")){
                     intent = new Intent(ChoosePlayers.this, GameOverlayCricket.class);
                     intent.putExtra("MODE", mode);
@@ -227,7 +220,7 @@ public class ChoosePlayers extends AppCompatActivity {
                 for(int i = 1; i<=countPlayer; i++){
                     intent.putExtra("PLAYER"+i, playerList.get(i-1));
                 }
-                finish();
+
                 startActivity(intent);
             }
         });
@@ -235,9 +228,9 @@ public class ChoosePlayers extends AppCompatActivity {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ChoosePlayers.this, ChooseMode.class);
+                //Intent intent = new Intent(ChoosePlayers.this, ChooseMode.class);
                 finish();
-                startActivity(intent);
+                //startActivity(intent);
             }
         });
     }
