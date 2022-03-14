@@ -28,11 +28,6 @@
             android:label="@string/title_activity_test"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name=".GameOverlayCricket"
-            android:label="@string/title_activity_game_overlay_cricket"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

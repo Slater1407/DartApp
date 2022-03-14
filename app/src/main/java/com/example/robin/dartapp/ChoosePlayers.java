@@ -27,7 +27,7 @@ public class ChoosePlayers extends AppCompatActivity {
     private Button btn_back;
     private EditText et_Player;
     private int countPlayer;
-    private int maxPlayers = 8;
+    private final int maxPlayers = 8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,9 +136,8 @@ public class ChoosePlayers extends AppCompatActivity {
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        final String mode = getIntent().getStringExtra("MODE");
-        final String extra1 = getIntent().getStringExtra("EXTRA1");
-        final String extra2 = getIntent().getStringExtra("EXTRA2");
+        final int score = getIntent().getIntExtra("SCORE", 0);
+        final int extra = getIntent().getIntExtra("EXTRA", 0);
 
         final ArrayList<String> playerList = new ArrayList<String>();
 
@@ -207,16 +206,11 @@ public class ChoosePlayers extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent;
-                if(mode.equals("CRICKET")){
-                    intent = new Intent(ChoosePlayers.this, GameOverlayCricket.class);
-                    intent.putExtra("MODE", mode);
-                }else {
-                    intent = new Intent(ChoosePlayers.this, GameOverlay.class);
-                    intent.putExtra("MODE", mode);
-                }
+
+                intent = new Intent(ChoosePlayers.this, GameOverlay.class);
+                intent.putExtra("SCORE", score);
                 intent.putExtra("COUNTPLAYERS", countPlayer);
-                intent.putExtra("EXTRA1", extra1);
-                intent.putExtra("EXTRA2", extra2);
+                intent.putExtra("EXTRA", extra);
                 for(int i = 1; i<=countPlayer; i++){
                     intent.putExtra("PLAYER"+i, playerList.get(i-1));
                 }

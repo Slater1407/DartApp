@@ -59,6 +59,7 @@ public class GameOverlay extends AppCompatActivity {
         final ImageView dartScheibe = new ImageView(this);
         final TextView infoPlayer = new TextView(this);
         final TextView infoRoundPoints = new TextView(this);
+        final ImageView pfeile = new ImageView(this);
         final TextView infoRunden = new TextView(this);
         final TextView infoGeworfen = new TextView(this);
         final Button btnMenu = new Button(this);
@@ -83,6 +84,8 @@ public class GameOverlay extends AppCompatActivity {
         infoRoundPoints.setTextSize(x/50);
         infoRoundPoints.setGravity(Gravity.LEFT);
         infoRoundPoints.setGravity(Gravity.CENTER_VERTICAL);
+
+        pfeile.setImageResource(R.drawable.pfeiledrei);
 
         infoRunden.setText("Runde: " + round);
         infoRunden.setId(ViewCompat.generateViewId());
@@ -118,6 +121,7 @@ public class GameOverlay extends AppCompatActivity {
         RelativeLayout.LayoutParams lpPlayer1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         RelativeLayout.LayoutParams lpDart = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         RelativeLayout.LayoutParams lpPlayer2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lpPfeile = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         RelativeLayout.LayoutParams lpRunden = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         RelativeLayout.LayoutParams lpGeworfen = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         RelativeLayout.LayoutParams lpMenu = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -131,7 +135,12 @@ public class GameOverlay extends AppCompatActivity {
         infoPlayer.setLayoutParams(lpPlayer1);
         mLayout.addView(infoPlayer);
 
-        lpPlayer2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        lpPfeile.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        lpPfeile.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+        pfeile.setLayoutParams(lpPfeile);
+        mLayout.addView(pfeile);
+
+        lpPlayer2.addRule(RelativeLayout.RIGHT_OF, infoPlayer.getId());
         lpPlayer2.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
         infoRoundPoints.setLayoutParams(lpPlayer2);
         mLayout.addView(infoRoundPoints);
@@ -172,45 +181,15 @@ public class GameOverlay extends AppCompatActivity {
         dartScheibe.getLayoutParams().height = x;
         infoPlayer.getLayoutParams().width = x/2;
         infoPlayer.getLayoutParams().height = y/10;
-        infoRoundPoints.getLayoutParams().width = x/2;
+        infoRoundPoints.getLayoutParams().width = x/4;
         infoRoundPoints.getLayoutParams().height = y/10;
+        pfeile.getLayoutParams().width = x/4;
+        pfeile.getLayoutParams().height = y/10;
         infoRunden.getLayoutParams().width = x/2;
         infoRunden.getLayoutParams().height = y/10;
         infoGeworfen.getLayoutParams().width = x/2;
         infoGeworfen.getLayoutParams().height = y/10;
 
-//-------------------------------------------------------------------------------------------------------------------
-/*
-        ImageView dartScheibe = (ImageView) findViewById(R.id.dartImage);
-        final TextView infoPlayer = (TextView) findViewById(R.id.p1);
-        final TextView infoRoundPoints = (TextView) findViewById(R.id.p2);
-        final TextView infoRunden = (TextView) findViewById(R.id.runde);
-        final TextView infoGeworfen = (TextView) findViewById(R.id.geworfen);
-        Button btnDelete = (Button) findViewById(R.id.delete);
-        Button btnEnter = (Button) findViewById(R.id.enter);
-        Button btnNeuesSpiel = (Button) findViewById(R.id.neuesSpiel);
-        Button btnMenu = (Button) findViewById(R.id.menu);
-
-        dartScheibe.getLayoutParams().width = x;
-        dartScheibe.getLayoutParams().height = x;
-        infoPlayer.getLayoutParams().width = x/2;
-        infoPlayer.getLayoutParams().height = y/10;
-        infoRoundPoints.getLayoutParams().width = x/2;
-        infoRoundPoints.getLayoutParams().height = y/10;
-        infoRunden.getLayoutParams().width = x/2;
-        infoRunden.getLayoutParams().height = y/10;
-        infoGeworfen.getLayoutParams().width = x/2;
-        infoGeworfen.getLayoutParams().height = y/10;
-
-        btnDelete.getLayoutParams().width = x/2;
-        btnDelete.getLayoutParams().height = y/10;
-        btnEnter.getLayoutParams().width = x/2;
-        btnEnter.getLayoutParams().height = y/10;
-        btnMenu.getLayoutParams().width = x/2;
-        btnMenu.getLayoutParams().height = y/10;
-        btnNeuesSpiel.getLayoutParams().width = x/2;
-        btnNeuesSpiel.getLayoutParams().height = y/10;
-*/
 //-------------------------------------------------------------------------------------------------------------------
         dartScheibe.setOnTouchListener(new View.OnTouchListener()
         {
@@ -237,22 +216,27 @@ public class GameOverlay extends AppCompatActivity {
                     }
                     roundPoints+=throwResult.getSum();
                     throwSaves.add(new Throw(player, throwResult, arrow, round, roundPoints, whatPlayer));
-                    nextArrow();
+                    if(player.getScore() != 0) {
+                        nextArrow();
+                    }else{
+                        arrow++;
+                    }
                 }
-                updateInfo(infoPlayer, infoGeworfen, null, infoRoundPoints, throwResult.toString());
+                updateInfo(infoPlayer, infoGeworfen, null, infoRoundPoints, throwResult.toString(), pfeile);
                 /*infoPlayer.setText(player.getName()+ ": " +player.getScore());
                 infoGeworfen.setText("Geworfen: "+throwResult.getPoints());
                 infoRoundPoints.setText("Ges: "+ roundPoints);*/
 
                 if(arrow == 1) {
                     dartScheibe.setEnabled(false);
+                    pfeile.setImageResource(R.drawable.pfeilenull);
                     player = players.get(whatPlayer);
                     roundPoints = 0;
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            updateInfo(infoPlayer, infoGeworfen, infoRunden, infoRoundPoints, "0");
+                            updateInfo(infoPlayer, infoGeworfen, infoRunden, infoRoundPoints, "0", pfeile);
                           /*  infoPlayer.setText(player.getName()+ ": " +player.getScore());
                             infoGeworfen.setText("Geworfen: "+ 0);
                             infoRunden.setText("Runde: "+ round);
@@ -272,7 +256,7 @@ public class GameOverlay extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 createGame();
-                updateInfo(infoPlayer, infoGeworfen, infoRunden, infoRoundPoints, "0");
+                updateInfo(infoPlayer, infoGeworfen, infoRunden, infoRoundPoints, "0", pfeile);
                 infoPlayer.setBackgroundColor(getResources().getColor(R.color.transparent));
                 dartScheibe.setEnabled(true);
             }
@@ -296,7 +280,7 @@ public class GameOverlay extends AppCompatActivity {
                     undoLastThrow();
                     Throw lastThrow = throwSaves.get(throwSaves.size() - 1);
                     roundPoints = lastThrow.getRoundPoints();
-                    updateInfo(infoPlayer, infoGeworfen, infoRunden, infoRoundPoints, lastThrow.getThrowResult().toString());
+                    updateInfo(infoPlayer, infoGeworfen, infoRunden, infoRoundPoints, lastThrow.getThrowResult().toString(), pfeile);
                     dartScheibe.setEnabled(true);
                     infoPlayer.setBackgroundColor(getResources().getColor(R.color.transparent));
                 }
@@ -353,39 +337,20 @@ Player1
         //Daten aus vorheriger Activity empfangen
 
         final int countPlayers = getIntent().getIntExtra("COUNTPLAYERS", -1);
-        final String extra1 = getIntent().getStringExtra("EXTRA1");
-        final String extra2 = getIntent().getStringExtra("EXTRA2");
-        final String mode = getIntent().getStringExtra("MODE");
+        final int extra = getIntent().getIntExtra("EXTRA", -1);
+        final int totalScore = getIntent().getIntExtra("SCORE", 0);
 
         //-----------------------------------------------------------------------------------------------------------------------
         //Objekte initialisieren
-        final int totalScore;
-        if(mode.equals("301")){
-            totalScore = 301;
-        }else if(mode.equals("501")){
-            totalScore = 501;
-        }else{
-            totalScore = 999;
-        }
         for(int i = 1; i < countPlayers+1; i++){
             players.add(new Player(getIntent().getStringExtra("PLAYER"+i), totalScore));
-        }
-        final int extra;
-        if(extra1 == null && extra2 == null){
-            extra = GameCasual.NORMAL;
-        }else if(extra1 != null && extra2 == null){
-            extra = GameCasual.DOUBLE_IN;
-        }else if(extra1 == null && extra2 != null){
-            extra = GameCasual.DOUBLE_OUT;
-        }else{
-            extra = GameCasual.DOUBLE_IN_OUT;
         }
 
         player = players.get(0);
         game = new GameCasual(extra, totalScore);    //Objekt des Spiels
         throwSaves.add(new Throw(player, new ThrowResult(0, 1), arrow, round, roundPoints, whatPlayer));
     }
-    void updateInfo(TextView infoSpieler, TextView infoGeworfen, TextView infoRunden, TextView infoRundenPunkte, String geworfen){
+    void updateInfo(TextView infoSpieler, TextView infoGeworfen, TextView infoRunden, TextView infoRundenPunkte, String geworfen, ImageView pfeile){
         if(infoSpieler != null){
             infoSpieler.setText(player.getName() + ": " + player.getScore());
         }
@@ -397,6 +362,22 @@ Player1
         }
         if(infoRundenPunkte != null){
             infoRundenPunkte.setText("Ges: " + roundPoints);
+        }
+        switch (arrow){
+            case 1:
+                pfeile.setImageResource(R.drawable.pfeiledrei);
+                break;
+            case 2:
+                pfeile.setImageResource(R.drawable.pfeilezwei);
+                break;
+            case 3:
+                pfeile.setImageResource(R.drawable.pfeileeins);
+                break;
+            case 4:
+                pfeile.setImageResource(R.drawable.pfeilenull);
+                break;
+            default:
+                break;
         }
     }
 
